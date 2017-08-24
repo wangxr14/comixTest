@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<script type="text/javascript" src="static/js/customize.js"></script>
+<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+<script src="http://hongru.github.io/proj/canvas2image/canvas2image.js"></script>
+<script type="text/javascript" src="static/js/rough.js"></script>
+<!-- fonts -->
+<!--link rel="stylesheet" href="http://localhost:5000/xkcd/"-->
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/humor-sans" type="text/css"/>
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/ruji-s-handwriting-font-v-2-0" type="text/css"/>
+<link href="https://fonts.googleapis.com/css?family=Just+Me+Again+Down+Here" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Slackey" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Coming+Soon" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Passion+One" rel="stylesheet">
+<!-- JQuery -->
+<!--script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script-->
+</head>
+<body onload="load()">
+	<table>
+		<tr>
+		<td id="comicPart" width="300px">
+			<canvas id="comicCanvas" width="300px" height="400px"></canvas>
+		</td>
+
+		<td id="middlePart" align="center" style="width:150px;"></td>
+
+		<td id="textPart" class="myText" align="center" 
+		style="width:300px; font-size: 20px;font-family: HumorSansRegular;font-weight: bold;">
+    <!-- Last 2 weeks , You went to the gym less than 60% of your friends!! -->
+    <!-- Congrats! You have reached your goal of exercising three times a week. -->
+    <!-- Over the past month, your exercise activity was less than that of 90% of your friends. -->
+	<!-- Your exercise activity is in the top 20% of all your friends. -->
+    <!-- Over the past two weeks, you went to the gym less often than 60% of your friends did. -->
+		</td>
+	
+		</tr>
+	
+	</table>
+	
+	<div>Edit Area
+	<div >
+		<textarea id="messageArea" width="100px" height="50px">{mark:"B",content:"Congrats!"},
+{mark:"B",content:"You have reached your goal of exercising three times a week."},
+{mark:"A",content:"Yes!!!"}</textarea>
+		<br>
+		gestA
+		<textarea id="gestAreaA">1</textarea>
+		gestB
+		<textarea id="gestAreaB">0</textarea>
+		dist
+		<textarea id="distArea">1</textarea>
+		shad
+		<textarea id="shadArea">1</textarea>
+		<button type="button" onclick="load()">Rerender</button>
+		<button type="button" onclick="comicPosition()">Switch!</button>
+		<button type="button" onclick="saveCanvas()">Save</button>
+	</div>
+	</div>
+  <image id="theimage"></image>
+  <div id="test"></div>
+  </body>
+
+  <!--script src="js/require.js" defer async="true" ></script-->
+  

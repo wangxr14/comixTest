@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'xkcd_Regular';
+  src: url('comicGenerator/css/fonts/xkcd-Regular.otf');
+  font-style: normal;
+}
+@font-face {
+  font-family: 'xkcd';
+  font-style: normal;
+  font-weight: 400;
+  src: url('comicGenerator/css/fonts/xkcd.ttf');
+  
+}
