@@ -24,7 +24,6 @@ function load(){
 	var shad = parseFloat(document.getElementById("shadArea").value);
 	// Get message from text area
 	msgTotalList = [];
-	document.getElementById("test").innerHTML = "TEST"
 	document.getElementById("textPart").innerHTML = '';
 	var msgContent = document.getElementById("messageArea").value;
 	var msgObject = eval('[' + msgContent + ']');
