@@ -10,7 +10,7 @@ var defaultGest = 1;
 var defaultDist = 2;
 var defaultShad = 0;
 
-var labelMessage = "ONE DAY, YOUR FRIEND TELLS YOU...";
+var labelMessage = "ONE DAY, YOUR FRIEND HAS SOMETHING TO TELL YOU...";
 
 var fontSize = 15;
 
@@ -32,7 +32,7 @@ function load(){
 	    msgObject[i].content.toUpperCase();
 	    msgTotalList.push(msgObject[i]);
 	}
-	document.getElementById("textPart").innerHTML = msgObject[msgObject.length-2].content.toUpperCase()+"<br>";
+	document.getElementById("textPart").innerHTML = msgObject[msgObject.length-2].content+"<br>";
 	
 	render_rough(gestA,gestB,dist,shad);
 	comicPosition()
@@ -41,7 +41,6 @@ function load(){
 function getMsgSplitList(msg, lengthLimit){
 	var msgList = [];
 	var msgSplit = msg.split(" ")
-	//console.log(msgSplit)	
 	var count = 0;
 	var lineNum = 0;
 	var tmpMsg = '';
@@ -55,7 +54,6 @@ function getMsgSplitList(msg, lengthLimit){
 			tmpMsg = msgSplit[count]+' ';
 		}
 		count+=1;
-		//console.log(tmpMsg)
 	}
 	if(tmpMsg != ''){
 		msgList.push(tmpMsg);
@@ -86,7 +84,7 @@ function setBackgroundShading(rough,shad){
 	bg.roughness = 0;
 }
 
-function setInfoLabel(rough,x,y,message,labelFontSize = 15,limit=18){
+function setInfoLabel(rough,x,y,message,labelFontSize = 15,limit=28){
 	// Calculate label height and width	
 	// todo: a little problem in the limit setting
 	msgList = getMsgSplitList(message, limit);
@@ -106,17 +104,17 @@ function setInfoLabel(rough,x,y,message,labelFontSize = 15,limit=18){
 	var tmpY = y + labelFontSize;
 	for (var i =0; i < msgList.length; i++){
 		var tmpMsg = msgList[i];
-		var msgText = rough.createText(tmpMsg,tmpX,tmpY,"bold 15px HumorSansRegular","black");
+		var msgText = rough.createText(tmpMsg,tmpX,tmpY,"15px HumorSansRegular","black");
 		tmpY += labelFontSize;
 	}
 	tmpY -= labelFontSize;
 }
 
 function drawBubbleCurve(rough, x0, y0,len0, x1, y1, len1){
-	var curve=rough.curve([[x0+len0*fontSize/2/2,y0+5],
+	var curve=rough.curve([[x0+len0*fontSize/2/2,y0],
 						[x0+len0*fontSize/2/2+(Math.random()-0.5)*len0*fontSize/2/2,y0+(y1-y0)/3],
 						[x1+len1*fontSize/2/2+(Math.random()-0.5)*len1,y0+(y1-y0)*2/3],
-						[x1+len1*fontSize/2/2,y1-8]]);
+						[x1+len1*fontSize/2/2,y1]]);
 		curve.stroke = "black";
 		curve.roughness = 0.5;
 }
@@ -143,32 +141,38 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 	setInfoLabel(rough,10,10,labelMessage);
 	
 	// Draw the horizon
-	var line1 = rough.line(18, 340, 275,310);
+	var line1 = rough.line(18, 350, 275,330);
 	line1.stroke = "white";
 	line1.strokeWidth = 3;
 	line1.roughness = 1;
-	var line2 = rough.line(15, 340, 280,310);
+	var line2 = rough.line(15, 350, 280,330);
 	line2.stroke = "black";
 	line2.strokeWidth = 2;
 	line2.roughness = 1;
 	
 	// Draw the character
 	// todo:how to determine the position?
-	var posAX=canvasWidth/2-50-dist*20, 
-		posAY=250,
-		posBX=canvasWidth/2+50+dist*20,
-		posBY=250;
+	var posAX=canvasWidth/2-30-dist*20, 
+		posAY=260,
+		posBX=canvasWidth/2+30+dist*20,
+		posBY=260;
 	if(gestA == -2){
-		posAY+=20
+		posAY+=25
 	}
 	if(gestB == -2){
-		posBY+=20
+		posBY+=25
 	}
-	drawCharacter(rough,posAX,posAY,gestA,-1,"white",5);
-	drawCharacter(rough,posBX,posBY,gestB,1,"white",5);
+	if(gestA == 2){
+		posAY+=10
+	}
+	if(gestB == 2){
+		posBY+=10
+	}
+	drawCharacter(rough,posAX,posAY,gestA,-1,"white",6);
+	drawCharacter(rough,posBX,posBY,gestB,1,"white",6);
 	
-	drawCharacter(rough,posAX,posAY,gestA,-1,"black",2,0.5);
-	drawCharacter(rough,posBX,posBY,gestB,1,"black",2,0.5);
+	drawCharacter(rough,posAX,posAY,gestA,-1,"black",2.5,0.5);
+	drawCharacter(rough,posBX,posBY,gestB,1,"black",2.5,0.5);
 	
 	// Add message bubble
 	// And draw the lines between bubbles
@@ -176,37 +180,40 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 	var bubbleA = []
 	var bubbleB = []
 	var bbX = 0;
-	var bbY = 20;
+	var bbY = 50;
 	var lastMark = '';
 	for(var i = 0;i<msgTotalList.length;i++){
 		if(lastMark == '' || lastMark == msgTotalList[i].mark){
-			bbY += 30;
+			bbY += 20;
+		}
+		else{
+			bbY += 0;
 		}
 		if(msgTotalList[i].mark=="A"){				
 			bbX = posAX-30;
 			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
-			"black","bold 15px HumorSansRegular",(posBX-30-bbX)*1.8/fontSize);
+			"black","15px HumorSansRegular",(posBX-bbX)*1.8/fontSize);
 			bubbleA.push(tmpBubble);
 			bbY = tmpBubble.y2;
 		}
 		else if(msgTotalList[i].mark=="B"){
-			bbX = posBX-60;
+			bbX = posBX-50;
 			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
-			"black","bold 15px HumorSansRegular",(canvasWidth-borderDist-bbX)*1.8/fontSize);
+			"black","15px HumorSansRegular",(canvasWidth-borderDist-bbX)*1.8/fontSize);
 			bubbleB.push(tmpBubble);
 			bbY = tmpBubble.y2;
 		}	
 		lastMark = msgTotalList[i].mark; 
 	}
 	
-	bubbleA.push({x1:posAX-10,y1:posAY-18,len1:2});
+	bubbleA.push({x1:posAX-10,y1:posAY-10,len1:2});
 	for (var i = 0;i<bubbleA.length-1;i++){
-		drawBubbleCurve(rough, bubbleA[i].x2,bubbleA[i].y2, bubbleA[i].len2, bubbleA[i+1].x1,bubbleA[i+1].y1,bubbleA[i+1].len1);
+		drawBubbleCurve(rough, bubbleA[i].x2,bubbleA[i].y2+5, bubbleA[i].len2, bubbleA[i+1].x1,bubbleA[i+1].y1-12,bubbleA[i+1].len1);
 	}
 
-	bubbleB.push({x1:posBX,y1:posBY-18,len1:2});
+	bubbleB.push({x1:posBX,y1:posBY-10,len1:2});
 	for (var i = 0;i<bubbleB.length-1;i++){
-		drawBubbleCurve(rough,bubbleB[i].x2,bubbleB[i].y2,bubbleB[i].len2,bubbleB[i+1].x1,bubbleB[i+1].y1,bubbleB[i+1].len1);
+		drawBubbleCurve(rough,bubbleB[i].x2,bubbleB[i].y2+5,bubbleB[i].len2,bubbleB[i+1].x1,bubbleB[i+1].y1-12,bubbleB[i+1].len1);
 	}
 	
 	
@@ -225,17 +232,19 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 	var leftLegPointAX,leftLegPointAY, leftLegPointBX,leftLegPointBY;
 	var rightLegPointAX,rightLegPointAY, rightLegPointBX,rightLegPointBY;
 	
+	// Regular
+	headRadius=16;
 	switch(gest){
 		case -2:
 			//head
-			headPointX=x; headPointY=y; headRadius=20;
+			headPointX=x; headPointY=y;
 			//body
 			bodyPointAX=headPointX+ori*16;bodyPointAY=headPointY+headRadius-8; 
 			bodyPointBX=bodyPointAX+ori*10;bodyPointBY=bodyPointAY+15;
 			bodyPointCX=bodyPointAX+ori*10;bodyPointCY=bodyPointAY+40;
 			// Arms
-			leftArmPointAX=bodyPointAX+ori*13;leftArmPointAY=bodyPointAY+15;
-			leftArmPointBX=leftArmPointAX;leftArmPointBY=leftArmPointAY+20;
+			leftArmPointAX=bodyPointAX+ori*3;leftArmPointAY=bodyPointAY+24;
+			leftArmPointBX=leftArmPointAX-ori*13;leftArmPointBY=leftArmPointAY+18;
 			rightArmPointAX=bodyPointAX+ori*(-10);rightArmPointAY=bodyPointAY+20;
 			rightArmPointBX=rightArmPointAX+ori*(-20);rightArmPointBY=rightArmPointAY-20;
 			// Legs
@@ -245,43 +254,43 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightLegPointBX=rightLegPointAX+ori*28;rightLegPointBY=rightLegPointAY+3;
 			break;
 		case -1:
-			headPointX=x; headPointY=y; headRadius=20;
+			headPointX=x; headPointY=y; 
 			//body
 			bodyPointAX=headPointX+ori*12;bodyPointAY=headPointY+headRadius-4; 
 			bodyPointBX=bodyPointAX+ori*8;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX+ori*8;bodyPointCY=bodyPointAY+40;
+			bodyPointCX=bodyPointAX+ori*8;bodyPointCY=bodyPointAY+35;
 			// Arms
 			leftArmPointAX=bodyPointAX-ori*8;leftArmPointAY=bodyPointAY+18;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+26;
 			rightArmPointAX=bodyPointAX+ori*(-2);rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*(-2);rightArmPointBY=rightArmPointAY+25;
+			rightArmPointBX=rightArmPointAX+ori*(-2);rightArmPointBY=rightArmPointAY+26;
 			// Legs
 			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+30;
 			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+16;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+30;
 			break;
 		case 0:
-			headPointX=x; headPointY=y; headRadius=20;
+			headPointX=x; headPointY=y; 
 			//body
 			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
-			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
-			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
+			bodyPointBX=bodyPointAX+ori*2;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX+ori*2;bodyPointCY=bodyPointAY+35;
 			// Arms
-			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
-			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
-			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
+			leftArmPointAX=bodyPointAX-ori*5;leftArmPointAY=bodyPointAY+18;
+			leftArmPointBX=leftArmPointAX-ori*18;leftArmPointBY=leftArmPointAY+10;
+			rightArmPointAX=bodyPointAX+ori*10;rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*3;rightArmPointBY=rightArmPointAY+22;
 			// Legs
-			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+25;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+25;
+			rightLegPointAX=bodyPointCX-ori*8;rightLegPointAY=bodyPointCY+20;
+			rightLegPointBX=rightLegPointAX-ori*2;rightLegPointBY=rightLegPointAY+30;
 			break;
 		case 1:
-			headPointX=x; headPointY=y; headRadius=20;
+			headPointX=x; headPointY=y; 
 			//body
-			bodyPointAX=headPointX-ori*12;bodyPointAY=headPointY+headRadius-4;
+			bodyPointAX=headPointX-ori*8;bodyPointAY=headPointY+headRadius-2;
 			bodyPointBX=bodyPointAX-ori*3;bodyPointBY=bodyPointAY+18;
 			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+40;
 			// Arms
@@ -290,30 +299,30 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightArmPointAX=bodyPointAX+ori*18;rightArmPointAY=bodyPointAY+18;
 			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
 			// Legs
-			leftLegPointAX=bodyPointCX+ori*15;leftLegPointAY=bodyPointCY+20;
-			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
-			rightLegPointAX=bodyPointCX-ori*15;rightLegPointAY=bodyPointCY+20;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			leftLegPointAX=bodyPointCX+ori*12;leftLegPointAY=bodyPointCY+17;
+			leftLegPointBX=leftLegPointAX+ori*6;leftLegPointBY=leftLegPointAY+28;
+			rightLegPointAX=bodyPointCX-ori*12;rightLegPointAY=bodyPointCY+15;
+			rightLegPointBX=rightLegPointAX-ori*6;rightLegPointBY=rightLegPointAY+28;
 			break;
 		case 2:
-		    headPointX=x; headPointY=y; headRadius=20;
+		    headPointX=x; headPointY=y; 
 			//body
-			bodyPointAX=headPointX-ori*16;bodyPointAY=headPointY+headRadius-8;
-			bodyPointBX=bodyPointAX-ori*8;bodyPointBY=bodyPointAY+25;
-			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+50;
+			bodyPointAX=headPointX-ori*8;bodyPointAY=headPointY+headRadius-2;
+			bodyPointBX=bodyPointAX-ori*6;bodyPointBY=bodyPointAY+20;
+			bodyPointCX=bodyPointAX-ori*3;bodyPointCY=bodyPointAY+40;
 			// Arms
 			leftArmPointAX=bodyPointAX-ori*20;leftArmPointAY=bodyPointAY-5;
 			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY-25;
-			rightArmPointAX=bodyPointAX+ori*22;rightArmPointAY=bodyPointAY+18;
-			rightArmPointBX=rightArmPointAX+ori*27;rightArmPointBY=rightArmPointAY-25;
+			rightArmPointAX=bodyPointAX+ori*22;rightArmPointAY=bodyPointAY+8;
+			rightArmPointBX=rightArmPointAX+ori*27;rightArmPointBY=rightArmPointAY-15;
 			// Legs
-			leftLegPointAX=bodyPointCX+ori*10;leftLegPointAY=bodyPointCY+28;
-			leftLegPointBX=leftLegPointAX+ori*25;leftLegPointBY=leftLegPointAY+5;
-			rightLegPointAX=bodyPointCX-ori*25;rightLegPointAY=bodyPointCY+10;
-			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			leftLegPointAX=bodyPointCX+ori*8;leftLegPointAY=bodyPointCY+25;
+			leftLegPointBX=leftLegPointAX+ori*25;leftLegPointBY=leftLegPointAY+6;
+			rightLegPointAX=bodyPointCX-ori*22;rightLegPointAY=bodyPointCY+10;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+23;
 			break;
 		default:
-			headPointX=x; headPointY=y; headRadius=20;
+			headPointX=x; headPointY=y; 
 			//body
 			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
 			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
@@ -384,6 +393,7 @@ function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",limi
 	// Set message
 	// todo: a little problem in the limit setting
 	var msgList = getMsgSplitList(message, limit);	
+
 	var tmpX = x;
 	var tmpY = y + fontSize;
 	x1 = tmpX;
@@ -426,87 +436,4 @@ function saveCanvas(){
 	link.download = 'image';
 	link.href = dataString;
 	link.click();
-}
-
-function setActor1(){ // set the position and gesture of actor 1
-	var act1 = document.getElementById('actor1');
-	
-	if(gest==0){//Neutral
-		act1.setAttribute('t', 'translate(94,19) rotate(-2)');
-		act1.setAttribute('pose', '-11,9|-5,117|-11,99|-11,89|-11,79|-11,59|-16,34|-21,9|-6,34|-1,9|-18,79|-18,59|-6,79|-1,59');
-		//Old version
-		//act1.setAttribute('pose', '-11,9|-9,120|-11,99|-11,89|-11,79|-11,59|-16,34|-21,9|-6,34|-1,9|-18,79|-18,59|5,86|22,81');
-	}
-	else if(gest==1){
-		act1.setAttribute('t', 'translate(71,19) rotate(-2)');
-		//Negative
-		//act1.setAttribute('pose', '-11,9|1,114|-9,98|-9,88|-15,79|-11,59|-16,34|-21,9|-6,34|-1,9|-19,78|-19,58|4,82|18,110');
-		//Positive
-		act1.setAttribute('pose', '-11,9|-20,121|-11,99|-11,89|-2,76|-1,54|-16,32|-21,7|15,40|20,15|-32,81|-35,57|11,106|12,128');
-	}
-	else{ //gest = 2
-		act1.setAttribute('t', 'translate(71,19) rotate(-2)');
-		//Negative
-		//act1.setAttribute('pose', '-11,9|13,90|-3,80|-5,60|-9,66|-8,46|14,29|-11,21|8,39|-16,29|-13,68|-12,52|10,64|25,80');
-		//Positive
-		act1.setAttribute('pose', '-11,9|-17,116|-11,99|-4,92|5,78|-1,58|-9,40|-28,29|23,59|28,40|-33,95|-54,114|8,111|17,136');
-	}
-	if(dist==0){ // set position
-		if(gest==2)
-			act1.setAttribute('t', 'translate(94,1) rotate(-2)');
-		else
-			act1.setAttribute('t', 'translate(94,19) rotate(-2)');
-	}
-	else if(dist==1){
-		if(gest==2)
-			act1.setAttribute('t', 'translate(81,1) rotate(-2)');
-		else
-			act1.setAttribute('t', 'translate(81,19) rotate(-2)');
-	}
-	else{
-		if(gest==2)
-			act1.setAttribute('t', 'translate(71,1) rotate(-2)');
-		else
-			act1.setAttribute('t', 'translate(71,19) rotate(-2)');
-	}
-}
-
-function setInfoBubble(msg, limit = defaultLimit){
-	var infoBubble = document.getElementById("infoBubble");
-	infoBubble.innerHTML='';
-	// How to redraw the picture?
-	var msgSplit = msg.split(" ")
-	console.log(msgSplit)
-	var count = 0;
-	var lineNum = 0;
-	var tmpMsg = '';
-
-	while(msgSplit[count]){
-		console.log(msgSplit[count])
-		if(tmpMsg.length + msgSplit[count].length <= limit){
-			tmpMsg += msgSplit[count];
-			tmpMsg += ' '
-		}
-		else{
-			//Add a line of message
-			var line = document.createElement('tspan');
-			line.innerHTML = tmpMsg;
-			line.setAttribute('x', '0');
-			line.setAttribute('y', lineNum.toString()+'em');
-			
-			infoBubble.appendChild(line);
-			tmpMsg = msgSplit[count]+' ';
-			lineNum+=1
-		}
-		count+=1;
-		console.log(tmpMsg)
-	}
-	if(tmpMsg != ''){
-		var line = document.createElement('tspan');
-			line.innerHTML = tmpMsg;
-			line.setAttribute('x', '0');
-			line.setAttribute('y', lineNum.toString()+'em');
-			
-			infoBubble.appendChild(line);
-	}
 }
