@@ -192,14 +192,14 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 		if(msgTotalList[i].mark=="A"){				
 			bbX = posAX-30;
 			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
-			"black","15px HumorSansRegular",(posBX-bbX)*1.8/fontSize);
+			"black","bold 15px HumorSansRegular",(posBX-bbX)*1.8/fontSize);
 			bubbleA.push(tmpBubble);
 			bbY = tmpBubble.y2;
 		}
 		else if(msgTotalList[i].mark=="B"){
 			bbX = posBX-50;
 			var tmpBubble = drawBubble(rough,bbX,bbY,msgTotalList[i].content,
-			"black","15px HumorSansRegular",(canvasWidth-borderDist-bbX)*1.8/fontSize);
+			"black","bold 15px HumorSansRegular",(canvasWidth-borderDist-bbX)*1.8/fontSize);
 			bubbleB.push(tmpBubble);
 			bbY = tmpBubble.y2;
 		}	
@@ -407,7 +407,7 @@ function drawBubble(rough,x,y,message,msgFontColor="black",msgFont = "15px",limi
 		rough.createText(msgList[i],tmpX+2,tmpY-2,msgFont,"white");
 		rough.createText(msgList[i],tmpX-2,tmpY+2,msgFont,"white");
 		rough.createText(msgList[i],tmpX-2,tmpY-2,msgFont,"white");
-		var msgText = rough.createText(msgList[i],tmpX,tmpY,msgFont,msgFontColor);
+		var msgText = rough.createText(msgList[i],tmpX,tmpY,"15px HumorSansRegular",msgFontColor);
 		tmpY += fontSize;
 	}
 	tmpY -= fontSize;
