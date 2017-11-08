@@ -168,6 +168,13 @@ function render_rough(gestA=defaultGest,gestB=defaultGest,dist=defaultDist, shad
 	if(gestB == 2){
 		posBY+=10
 	}
+	
+	//Add crowd
+	drawCharacter(rough,posBX+45,posBY,3,1,"white",6);
+	drawCharacter(rough,posBX+45,posBY,3,1,"black",2.5,0.5);
+	drawCharacter(rough,posBX+60,posBY,3,1,"white",6);
+	drawCharacter(rough,posBX+60,posBY,3,1,"black",2.5,0.5);
+	
 	drawCharacter(rough,posAX,posAY,gestA,-1,"white",6);
 	drawCharacter(rough,posBX,posBY,gestB,1,"white",6);
 	
@@ -321,6 +328,23 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			rightLegPointAX=bodyPointCX-ori*22;rightLegPointAY=bodyPointCY+10;
 			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+23;
 			break;
+		case 3:
+			headPointX=x; headPointY=y; 
+			//body
+			bodyPointAX=headPointX;bodyPointAY=headPointY+headRadius; 
+			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
+			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
+			// Arms
+			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+20;
+			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
+			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
+			rightArmPointBX=rightArmPointAX+ori*3;rightArmPointBY=rightArmPointAY+25;
+			// Legs
+			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
+			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
+			rightLegPointAX=bodyPointCX-ori*5;rightLegPointAY=bodyPointCY+20;
+			rightLegPointBX=rightLegPointAX-ori*3;rightLegPointBY=rightLegPointAY+20;
+			break;
 		default:
 			headPointX=x; headPointY=y; 
 			//body
@@ -328,10 +352,10 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 			bodyPointBX=bodyPointAX+ori*3;bodyPointBY=bodyPointAY+18;
 			bodyPointCX=bodyPointAX+ori*3;bodyPointCY=bodyPointAY+40;
 			// Arms
-			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+18;
+			leftArmPointAX=bodyPointAX-ori*3;leftArmPointAY=bodyPointAY+20;
 			leftArmPointBX=leftArmPointAX-ori*3;leftArmPointBY=leftArmPointAY+25;
 			rightArmPointAX=bodyPointAX+ori*7;rightArmPointAY=bodyPointAY+20;
-			rightArmPointBX=rightArmPointAX+ori*7;rightArmPointBY=rightArmPointAY+25;
+			rightArmPointBX=rightArmPointAX+ori*3;rightArmPointBY=rightArmPointAY+25;
 			// Legs
 			leftLegPointAX=bodyPointCX+ori*5;leftLegPointAY=bodyPointCY+20;
 			leftLegPointBX=leftLegPointAX+ori*3;leftLegPointBY=leftLegPointAY+20;
@@ -344,6 +368,8 @@ function drawCharacter(rough,x,y,gest=defaultGest,ori = -1,lineColor="black",lin
 	var head = rough.circle(headPointX, headPointY, headRadius);
 	head.stroke = lineColor;
 	head.strokeWidth = lineStroke;
+	head.fill = "white";
+	head.fillStyle = "solid";
 	head.roughness = roughness;
 	// Body
 	var body=rough.curve([[bodyPointAX, bodyPointAY],[bodyPointBX,bodyPointBY], [bodyPointCX,bodyPointCY]]);
@@ -437,3 +463,5 @@ function saveCanvas(){
 	link.href = dataString;
 	link.click();
 }
+
+
